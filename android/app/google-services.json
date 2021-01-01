@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "781615406176",
+    "project_id": "jumga-3b331",
+    "storage_bucket": "jumga-3b331.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781615406176:android:68bb5842b5590a092e7705",
+        "android_client_info": {
+          "package_name": "com.ng.jumga"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "781615406176-411ubgnl9gb3iubou822gvtcjle0u3ej.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD383-4igA9Se84KlV5iFYmY75XEXunM98"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "781615406176-411ubgnl9gb3iubou822gvtcjle0u3ej.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
