@@ -29,7 +29,7 @@ dependencies:
   provider: ^4.3.2+2
   http: ^0.12.2
   shared_preferences: ^0.5.12+4
-
+  flutterwave: ^0.0.2
   firebase_core: "0.5.3"
   flutter:
     sdk: flutter
@@ -54,8 +54,8 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
- assets:
-   - images/
+  assets:
+    - images/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

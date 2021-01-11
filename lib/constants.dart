@@ -12,5 +12,17 @@ const double kBorderRadius = 6.0;
 
 
 //SharedPreferences Keys.
-const String SESSION_TOKEN = 'SessionToken';
+const String LOGGED_IN = 'loggedIn';
 const String USER_STRING = 'UserString';
+
+const kName = 'name';
+const kEmail = 'email';
+const kCountry = 'country';
+const kPhone = 'phone';
+const kShopOwner = 'shopOwner';
+const kShopName = 'ShopName';
+
+///Currrencies
+
+const KSH = ' Ksh';
+

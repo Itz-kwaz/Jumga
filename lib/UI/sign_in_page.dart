@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:jumga/UI/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants.dart';
+import 'register_page.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -15,9 +19,10 @@ class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  bool passwordVisible = false;
+  bool passwordVisible = true;
 
   bool loading = false;
+  bool enabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -34,17 +39,22 @@ class _SignInPageState extends State<SignInPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: kToolbarHeight),
-                SizedBox(
-                  height: 50,
-                ),
                 Padding(
                   padding: EdgeInsets.only(top: 12.0),
                   child: Text(
-                      'Login',
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                          color: kBlackTextColor,
-                          fontWeight: FontWeight.w600)),
+                      'JUMGA',
+                      style: Theme.of(context).textTheme.headline4.copyWith(
+                          color: kPrimaryColor,
+                          fontWeight: FontWeight.bold)),
                 ),
+                SizedBox(
+                  height: 32.0,
+                ),
+                Text(
+                    'Login',
+                    style: Theme.of(context).textTheme.headline5.copyWith(
+                        color: kBlackTextColor,
+                        fontWeight: FontWeight.w600)),
                 SizedBox(
                   height: 16.0,
                 ),
@@ -55,7 +65,6 @@ class _SignInPageState extends State<SignInPage> {
                     children: [
                       _textInput('Email'),
                       TextFormField(
-                        key: Key('EmailField'),
                         validator: (value) {
                           bool emailValid = RegExp(
                               r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -111,7 +120,6 @@ class _SignInPageState extends State<SignInPage> {
                             onPressed: () {
                               setState(() {
                                 passwordVisible = !passwordVisible;
-
                               });
                             },
                           ),
@@ -137,8 +145,45 @@ class _SignInPageState extends State<SignInPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(kBorderRadius)),
                     padding: const EdgeInsets.all(16.0),
-                    color: kPrimaryColor,
+                    color: enabled? kPrimaryColor : Colors.blue.shade200,
                     onPressed: () async {
+                      if(_formKey.currentState.validate() && enabled) {
+                        setState(() {
+                          loading = true;
+                          enabled = false;
+                        });
+                        try {
+                          UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                          );
+                          if(userCredential.user != null) {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            prefs.setBool(LOGGED_IN, true);
+
+                            Navigator.of(context).pushAndRemoveUntil(
+                              // the new route
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => HomePage(),
+                              ),
+
+                                  (Route route) => false,
+                            );
+
+                          }
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'user-not-found') {
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('No user found for that email.'),),);
+                          } else if (e.code == 'wrong-password') {
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Wrong password provided'),),);
+                          }
+                        }finally{
+                          setState(() {
+                            loading = false;
+                            enabled = true;
+                          });
+                        }
+                      }
 
                     },
                     child: Row(
@@ -161,6 +206,35 @@ class _SignInPageState extends State<SignInPage> {
                         )
                       ],
                     )),
+                SizedBox(
+                  height: 8.0,
+                ),
+                FlatButton(
+                    padding: const EdgeInsets.all(16.0),
+                    color:Colors.white,
+                    onPressed: () async {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => RegisterPage(),),);
+                    },
+                    child: Center(
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Don\'t have an account? ',
+                          style: textTheme.button.copyWith(
+                            color: kBlackTextColor
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'Register',
+                              style: textTheme.button.copyWith(
+                                color: kPrimaryColor,
+                                fontWeight: FontWeight.bold,
+                              )
+                            )
+                          ]
+                        ),
+                      ),
+                    )
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 10.0),
                   child: Divider(

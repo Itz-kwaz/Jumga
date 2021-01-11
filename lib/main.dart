@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:jumga/UI/home_page.dart';
+import 'package:jumga/UI/register_page.dart';
 import 'package:jumga/UI/sign_in_page.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../constants.dart';
+import 'cart_screen.dart';
+import 'dashboard_page.dart';
+import 'profilePages/profile_screen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -9,77 +12,58 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  TextEditingController _searchController;
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(
-            height: kToolbarHeight,
+      bottomNavigationBar: BottomNavigationBar(
+        unselectedLabelStyle: TextStyle(color: kLightGrey),
+        selectedItemColor: kPrimaryColor,
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                'images/home.svg',
+                color: _currentIndex == 0 ? kPrimaryColor : Color(0xFF77838F),
+                width: 20.0,
+                height: 20.0,
+              ),
+              label: 'Home'
           ),
-          Container(
-            height: kToolbarHeight,
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    autofocus: false,
-                    controller: _searchController,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      hintText: 'Search Products',
-                      hintStyle: TextStyle(color: Color(0xFF9098B1)),
-                      prefixIcon: Icon(
-                        Icons.search_rounded,
-                        color: kPrimaryColor,
-                      ),
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color(0xFF9098B1), width: 0.1),
-                          borderRadius: BorderRadius.circular(6.0)),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: kPrimaryColor, width: 1.0),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 8.0,
-                ),
-                Icon(
-                  Icons.favorite_border_rounded,
-                  color: Color(0xFF9098B1),
-                ),
-                SizedBox(
-                  width: 4.0,
-                ),
-                Icon(
-                  Icons.notifications_outlined,
-                  color: Color(0xFF9098B1),
-                )
-              ],
-            ),
-          )
+          BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                'images/cart.svg',
+                color: _currentIndex == 1 ? kPrimaryColor : Color(0xFF77838F),
+                width: 20.0,
+                height: 20.0,
+              ),
+              label: 'Cart'
+          ),
+          BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                'images/user.svg',
+                color: _currentIndex == 2 ? kPrimaryColor : Color(0xFF77838F),
+                width: 20.0,
+                height: 20.0,
+              ),
+              label: 'Profile'
+          ),
+        ],
+      ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+        DashBoardPage(),
+        CartScreen(),
+          AccountScreen(),
         ],
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
   }
 }
