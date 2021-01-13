@@ -2,13 +2,15 @@ import '../constants.dart';
 
 class User {
   String name;
+  String id;
   String email;
   String phoneNumber;
   String country;
   bool shopOwner;
   String shopName;
+  double earnedAmount;
 
-  User({this.name,this.country,this.email,this.phoneNumber,this.shopOwner,this.shopName});
+  User({this.name,this.id,this.country,this.email,this.phoneNumber,this.shopOwner = false,this.shopName,this.earnedAmount});
 
   factory User.fromJson(Map<String,dynamic> json) {
     return User(
@@ -16,8 +18,10 @@ class User {
       email: json[kEmail],
       country: json[kCountry],
       phoneNumber: json[kPhone],
-      shopOwner: json[kShopOwner],
-      shopName: json[kShopName]
+      shopOwner: json[kShopOwner] ?? false,
+      shopName: json[kShopName],
+      earnedAmount: json[kEarnedAmount],
+      id: json[kUserId]
     );
   }
 
@@ -29,6 +33,8 @@ class User {
     data[kPhone] = this.phoneNumber;
     data[kShopOwner] = this.shopOwner;
     data[kShopName] = this.shopName;
+    data[kUserId] = this.id;
+    data[kEarnedAmount]= this.earnedAmount;
     return data;
   }
 }

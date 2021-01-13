@@ -1,13 +1,13 @@
-import 'dart:convert';
-
+import 'package:firebase_auth/firebase_auth.dart' as FB;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:jumga/Core/states/payment_provider.dart';
 import 'package:jumga/UI/sign_in_page.dart';
 import 'package:jumga/models/user.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants.dart';
-import '../become_a_seller_screen.dart';
+import 'become_a_seller_screen.dart';
 
 class AccountScreen extends StatefulWidget {
   @override
@@ -15,9 +15,10 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  User user = User();
   @override
   Widget build(BuildContext context) {
+   var model =  Provider.of<PaymentProvider>(context,listen:false);
+   User user = model.user;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -60,10 +61,6 @@ class _AccountScreenState extends State<AccountScreen> {
                           onTap: () {},
                           imagePath: 'images/user.svg'),
                       _ListTile(
-                          text: 'Orders',
-                          onTap: () {},
-                          imagePath: 'images/shopping_bag_alt.svg'),
-                      _ListTile(
                           text: 'Change Password',
                           onTap: () {},
                           imagePath: 'images/padlock.svg'),
@@ -77,70 +74,137 @@ class _AccountScreenState extends State<AccountScreen> {
                   ),
                 ),
                 SizedBox(height: 8.0),
-              InkWell(
-                onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)  => BecomeSellerScreen(),),);
-                },
-                child: Container(
-                    padding:
-                    EdgeInsets.only(left: 8.0, right: 8.0, top: 6.0, bottom: 4.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                                margin: const EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                  color: kBlackTextColor,
-                                  borderRadius: BorderRadius.circular(16.0),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.4),
-                                      spreadRadius: 2,
-                                      blurRadius: 7,
-                                      offset: Offset(0, 3), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: SvgPicture.asset(
-                                      'images/info_circle.svg',
-                                      color: kWhite,
-                                      height: 20.0,
-                                      width: 20.0,
-                                    ))),
-                            SizedBox(
-                              width: 8.0,
-                            ),
-                            Expanded(
-                              child: Text(
-                                'Open a shop!',
-                                style: TextStyle(
-                                  color: kBlackTextColor,
-                                  fontSize: 15.0,
+              Visibility(
+                visible: !user.shopOwner,
+                child: InkWell(
+                  onTap: (){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)  => BecomeSellerScreen(user: user),),);
+                  },
+                  child: Container(
+                      padding:
+                      EdgeInsets.only(left: 8.0, right: 8.0, top: 6.0, bottom: 4.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                  margin: const EdgeInsets.all(8.0),
+                                  decoration: BoxDecoration(
+                                    color: kPrimaryColor,
+                                    borderRadius: BorderRadius.circular(16.0),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.4),
+                                        spreadRadius: 2,
+                                        blurRadius: 7,
+                                        offset: Offset(0, 3), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: SvgPicture.asset(
+                                        'images/shopping_bag_alt.svg',
+                                        color: kWhite,
+                                        height: 20.0,
+                                        width: 20.0,
+                                      ))),
+                              SizedBox(
+                                width: 8.0,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'Open a shop!',
+                                  style: TextStyle(
+                                    color: kBlackTextColor,
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.bold
+                                  ),
                                 ),
                               ),
-                            ),
-                            Icon(
-                              Icons.keyboard_arrow_right,
+                              Icon(
+                                Icons.keyboard_arrow_right,
+                                color: Color(0xFFC5CEE0),
+                              )
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 48.0),
+                            child: Divider(
                               color: Color(0xFFC5CEE0),
+                            ),
+                          )
+                        ],
+                      )),
+                ),
+              ),
+                Visibility(
+                  visible: user.shopOwner,
+                  child: InkWell(
+                    onTap: (){
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)  => BecomeSellerScreen(user: user),),);
+                    },
+                    child: Container(
+                        padding:
+                        EdgeInsets.only(left: 8.0, right: 8.0, top: 6.0, bottom: 4.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                    margin: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      color: kPrimaryColor,
+                                      borderRadius: BorderRadius.circular(16.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.4),
+                                          spreadRadius: 2,
+                                          blurRadius: 7,
+                                          offset: Offset(0, 3), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Icon(Icons.cached_rounded,
+                                        color: Colors.white,)
+                                    ),
+                                ),
+                                SizedBox(
+                                  width: 8.0,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'Switch to shop mode!',
+                                    style: TextStyle(
+                                      color: kBlackTextColor,
+                                      fontSize: 15.0,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.keyboard_arrow_right,
+                                  color: Color(0xFFC5CEE0),
+                                )
+                              ],
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 48.0),
+                              child: Divider(
+                                color: Color(0xFFC5CEE0),
+                              ),
                             )
                           ],
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 48.0),
-                          child: Divider(
-                            color: Color(0xFFC5CEE0),
-                          ),
-                        )
-                      ],
-                    )),
-              ),
+                        )),
+                  ),
+                ),
                 SizedBox(height: 8.0),
                 Container(
                   child: InkWell(
                     onTap: () async {
+                      final _auth = FB.FirebaseAuth.instance;
+                      await _auth.signOut();
                       Navigator.of(context).pushAndRemoveUntil(
                         // the new route
                         MaterialPageRoute(
@@ -192,17 +256,7 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getUser();
-  }
 
-  Future<void> getUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String userString = prefs.getString(USER_STRING);
-    user = User.fromJson(jsonDecode(userString),);
-  }
 }
 
 class _ListTile extends StatelessWidget {

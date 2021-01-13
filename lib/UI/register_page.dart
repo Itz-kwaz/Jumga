@@ -1,7 +1,7 @@
-import 'dart:convert';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutterwave/utils/flutterwave_currency.dart';
 import 'package:jumga/UI/sign_in_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool loading = false;
 
   String dropDownValue;
+  String countryCode;
 
   bool enabled = true;
 
@@ -98,22 +99,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         autofocus: false,
                         controller: _emailController,
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        cursorColor: Theme.of(context).primaryColorDark,
-                        decoration: InputDecoration(
-                          hintText: 'name@samplemail.com',
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).hintColor,
-                                  width: 0.2),
-                              borderRadius: BorderRadius.circular(6.0)),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: kPrimaryColor, width: 1.0),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                        ),
+                        decoration: myInputDecoration.copyWith(
+                          hintText: 'name@sampleemail.com'
+                        )
                       ),
                       SizedBox(height: 16.0),
                       _textInput('Phone Number'),
@@ -176,7 +166,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               });
                             },
                           ),
-                          hintText: 'password',
+                          hintText: 'at least 6 characters',
                           border: OutlineInputBorder(
                               borderSide: BorderSide(
                                 color: Theme.of(context).hintColor,
@@ -219,6 +209,23 @@ class _RegisterPageState extends State<RegisterPage> {
                         setState(() {
                           dropDownValue = value;
                         });
+                        switch(dropDownValue) {
+                          case 'Nigeria':
+                            countryCode = FlutterwaveCurrency.NGN;
+                            break;
+                          case 'Ghana':
+                            countryCode = FlutterwaveCurrency.GHS;
+                            break;
+                          case 'Uk':
+                            countryCode = FlutterwaveCurrency.GBP;
+                            break;
+                          case 'Kenya':
+                            countryCode = FlutterwaveCurrency.KES;
+                            break;
+                          default:
+                            countryCode = FlutterwaveCurrency.NGN;
+                            break;
+                        }
                       },
                       items: ['Nigeria', 'UK', 'Ghana', 'Kenya']
                           .map<DropdownMenuItem<String>>((String value) {
@@ -251,25 +258,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             email: _emailController.text,
                             password: _passwordController.text,
                           );
-                          if(userCredential.user != null) {
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                            Jm.User user = Jm.User(
-                              name: _nameController.text,
-                              shopOwner: false,
-                              phoneNumber: _phoneController.text,
-                              country: dropDownValue,
-                              email: _emailController.text,
-                            );
 
-                            prefs.setString(
-                                USER_STRING,
-                                jsonEncode(
-                                  user.toJson(),
-                                ),);
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Account created successfully'),));
-                            await FirebaseAuth.instance.signOut();
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignInPage() ,),);
-                          }
+                          await storeUser(userCredential, context);
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {
                             _scaffoldKey.currentState.showSnackBar(
@@ -347,6 +337,35 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  Future storeUser(UserCredential userCredential, BuildContext context) async {
+      if(userCredential.user != null) {
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      Jm.User user = Jm.User(
+        name: _nameController.text,
+        shopOwner: false,
+        phoneNumber: _phoneController.text,
+        country: countryCode,
+        email:  _emailController.text,
+        id: userCredential.user.uid,
+        earnedAmount: 0.0,
+      );
+
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+      users.doc(user.id).set(user.toJson())
+          .then((value) => print("User Added"))
+          .catchError((error){
+            prefs.setBool('Failed_to_store_user', true);
+      });
+
+      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Account created successfully'),));
+      await FirebaseAuth.instance.signOut();
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignInPage() ,),);
+    }
   }
 
   Widget _textInput(String text) {

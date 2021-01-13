@@ -27,10 +27,14 @@ dependencies:
   firebase_auth: "^0.18.4+1"
   carousel_slider: ^2.3.1
   provider: ^4.3.2+2
+  flutter_dotenv: ^2.1.0
   http: ^0.12.2
   shared_preferences: ^0.5.12+4
-  flutterwave: ^0.0.2
-  firebase_core: "0.5.3"
+  cloud_firestore: any
+  flutterwave:
+    git:
+      url: https://github.com/Itz-kwaz/flutterwave-flutter
+  firebase_core:  ^0.5.3
   flutter:
     sdk: flutter
 
@@ -55,6 +59,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - keys.env
     - images/
 
 

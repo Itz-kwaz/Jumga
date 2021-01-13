@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:jumga/Core/states/payment_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../constants.dart';
 import 'cart_screen.dart';
@@ -65,5 +67,17 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+   init();
+  }
+
+  void init() async {
+    var model = Provider.of<PaymentProvider>(context,listen:false);
+     await model.getUser();
+     model.getExchangeRates();
   }
 }

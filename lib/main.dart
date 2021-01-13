@@ -1,12 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:jumga/UI/home_page.dart';
-import 'package:jumga/UI/register_page.dart';
-import 'package:jumga/UI/sign_in_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:jumga/Core/states/payment_provider.dart';
+import 'package:provider/provider.dart';
+import 'Core/routes/routes.dart';
 
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await DotEnv().load('keys.env');
   runApp(
       MyApp(),
   );
@@ -38,13 +40,19 @@ class MyApp extends StatelessWidget {
         }
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Jumga',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider<PaymentProvider>(create: (_) => PaymentProvider()),
+            ],
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Jumga',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+              ),
+              initialRoute: Routes.splashScreen,
+              routes: Routes.routes,
             ),
-            home: HomePage(),
           );
         }
 
