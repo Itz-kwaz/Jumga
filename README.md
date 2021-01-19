@@ -5,7 +5,7 @@ User create accounts on Jumga. There are two categories of User on Jumga, seller
 Once users makes the payment they then are able to switch between these two modes(seller and buyer) on the app.
 
 A seller can upload products to sell on Jumga. If any of their product is purchased on Jumga, their wallet is credited with 97.5% of the amount.
-The Seller can then decide to make a withdrawal anytime they want. The amount they decide to withdraw is sent to their account.
+The Seller can then decide to make a withdrawal anytime they want. The amount they decide to withdraw is sent to their account using flutterwave Api.
 
 
 <br>
