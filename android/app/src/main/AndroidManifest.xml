@@ -2,7 +2,8 @@
     package="com.ng.jumga">
    <application
         android:label="jumga"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+       android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

@@ -154,6 +154,7 @@ class _BecomeSellerScreenState extends State<BecomeSellerScreen> {
         // user didn't complete the transaction. Payment wasn't successful.
       } else {
         final isSuccessful = checkPaymentIsSuccessful(response);
+        print(isSuccessful);
         if (isSuccessful) {
           // provide value to customer
           _showSuccessDialog();
@@ -267,10 +268,8 @@ class _BecomeSellerScreenState extends State<BecomeSellerScreen> {
   }
 
   bool checkPaymentIsSuccessful(final ChargeResponse response) {
-    return response.data.status == FlutterwaveConstants.SUCCESSFUL &&
-        response.data.currency == this.currency &&
-        response.data.amount == this.amount &&
-        response.data.txRef == this.txref;
+
+    return response.data.status == FlutterwaveConstants.SUCCESSFUL;
   }
 
   void initialiseValues() {

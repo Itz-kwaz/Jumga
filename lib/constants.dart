@@ -20,6 +20,7 @@ const double kDollarToGbp = 0.74;
 //SharedPreferences Keys.
 const String LOGGED_IN = 'loggedIn';
 const String USER_STRING = 'UserString';
+const String IS_BUYER_STATE = 'userState';
 
 var myInputDecoration = InputDecoration(
   hintText: '',

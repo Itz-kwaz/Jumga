@@ -76,7 +76,7 @@ class _SignInPageState extends State<SignInPage> {
                         },
                         autofocus: false,
                         controller: _emailController,
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
                         cursorColor: Theme.of(context).primaryColorDark,
                         decoration: InputDecoration(
@@ -159,8 +159,8 @@ class _SignInPageState extends State<SignInPage> {
                           );
                           if(userCredential.user != null) {
                             SharedPreferences prefs = await SharedPreferences.getInstance();
-                            prefs.setBool(LOGGED_IN, true);
 
+                            prefs.setBool(IS_BUYER_STATE, true);
                             Navigator.of(context).pushAndRemoveUntil(
                               // the new route
                               MaterialPageRoute(

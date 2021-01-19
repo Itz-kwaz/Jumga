@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart' as FB;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:jumga/Core/routes/routes.dart';
 import 'package:jumga/Core/states/payment_provider.dart';
+import 'package:jumga/Core/states/user_state_provider.dart';
+import 'package:jumga/UI/shopOwnerUi/withdrawal_screen.dart';
 import 'package:jumga/UI/sign_in_page.dart';
 import 'package:jumga/models/user.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +20,8 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
-   var model =  Provider.of<PaymentProvider>(context,listen:false);
+   var model =  Provider.of<PaymentProvider>(context,listen:true);
+   var userStateModel = Provider.of<UserStateProvider>(context,listen:false);
    User user = model.user;
     return Scaffold(
       body: SafeArea(
@@ -62,7 +66,10 @@ class _AccountScreenState extends State<AccountScreen> {
                           imagePath: 'images/user.svg'),
                       _ListTile(
                           text: 'Change Password',
-                          onTap: () {},
+                          onTap: () {
+                            var model = Provider.of<PaymentProvider>(context,listen:false);
+                            model.updateUser();
+                          },
                           imagePath: 'images/padlock.svg'),
                       _ListTile(
                         text: 'Address Book',
@@ -141,8 +148,12 @@ class _AccountScreenState extends State<AccountScreen> {
                 Visibility(
                   visible: user.shopOwner,
                   child: InkWell(
-                    onTap: (){
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)  => BecomeSellerScreen(user: user),),);
+                    onTap: () async{
+
+                     await  userStateModel.changeState();
+
+                        Navigator.of(context).popAndPushNamed(Routes.homeScreen);
+
                     },
                     child: Container(
                         padding:
@@ -176,7 +187,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ),
                                 Expanded(
                                   child: Text(
-                                    'Switch to shop mode!',
+                                   userStateModel.userState == UserState.BUYER_STATE ? 'Switch to shop mode!' : 'Switch to buyer mode',
                                     style: TextStyle(
                                       color: kBlackTextColor,
                                       fontSize: 15.0,
@@ -198,6 +209,16 @@ class _AccountScreenState extends State<AccountScreen> {
                           ],
                         )),
                   ),
+                ),
+                Visibility(
+                  visible: userStateModel.userState == UserState.SELLER_STATE,
+                  child: _ListTile(
+                    text: "Withdraw funds",
+                    imagePath: 'images/credit_card.svg',
+                    onTap: (){
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => WithdrawalScreen()));
+                    },
+                  ) ,
                 ),
                 SizedBox(height: 8.0),
                 Container(
