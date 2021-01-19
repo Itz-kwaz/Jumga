@@ -36,11 +36,13 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final String txref = DateTime.now().toIso8601String();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<PaymentProvider>(context, listen: true);
     return Scaffold(
+      key: _scaffoldKey,
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: SingleChildScrollView(
@@ -308,6 +310,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                       body['reference'] = txref;
 
                       String message = await model.makePayment(body);
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message ?? 'Withdrawal failed'),),);
                     }
                   },
                   shape: RoundedRectangleBorder(
