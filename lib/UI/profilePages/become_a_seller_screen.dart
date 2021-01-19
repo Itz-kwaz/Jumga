@@ -151,7 +151,8 @@ class _BecomeSellerScreenState extends State<BecomeSellerScreen> {
       final ChargeResponse response =
           await flutterwave.initializeForUiPayments();
       if (response == null) {
-        // user didn't complete the transaction. Payment wasn't successful.
+
+        model.updateUser();
       } else {
         final isSuccessful = checkPaymentIsSuccessful(response);
         print(isSuccessful);

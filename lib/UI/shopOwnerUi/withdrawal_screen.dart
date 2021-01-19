@@ -30,6 +30,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
   void dispose() {
     _accountNumberController.dispose();
     _accountNameController.dispose();
+    _amountController.dispose();
     super.dispose();
   }
 
@@ -135,6 +136,10 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                   validator: (value) {
                     if (value.isEmpty) {
                       return 'Please enter your withdrawal amount.';
+                    }
+                    double amount = double.parse(value);
+                    if(amount > model.user.earnedAmount) {
+                      return 'Oga your money no reach that one oh!';
                     }
                     return null;
                   },

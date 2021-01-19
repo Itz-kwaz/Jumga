@@ -95,7 +95,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                                 visible: true,
                                 child: SummaryCard(
                                   title: 'Delivery Fee',
-                                  trailingText: '980'
+                                  trailingText: '200'
                                 ),
                               ),
                               Visibility(
@@ -123,7 +123,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                                             Padding(
                                               padding: const EdgeInsets.all(6.0),
                                               child: Text(
-                                                '${user.country} ${model.total}',
+                                                '${user.country} ${model.total + 200}',
                                                 style: TextStyle(
                                                     color: kBlackTextColor,
                                                     fontWeight: FontWeight.bold,
@@ -261,7 +261,7 @@ class _OrderSummaryState extends State<OrderSummary> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    'Pay ${model.total}',
+                    'Pay ${model.total + 200}',
                     style: TextStyle(
                       color: Colors.white
                     ),
@@ -307,8 +307,8 @@ class _OrderSummaryState extends State<OrderSummary> {
         if (isSuccessful) {
           // provide value to customer
           _showSuccessDialog();
-          var model = Provider.of<PaymentProvider>(context,listen:false);
-          model.updateUser();
+           var cartModel = Provider.of<CartsProvider>(context,listen:false);
+          model.updateUserEarnedAmount(cartModel.cartList);
         } else {
           _showErrorDialog(response.message);
         }

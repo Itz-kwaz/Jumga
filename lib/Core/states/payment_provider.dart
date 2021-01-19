@@ -9,6 +9,7 @@ import 'package:jumga/Core/routes/api_routes.dart';
 import 'package:jumga/constants.dart';
 import 'package:jumga/models/bank.dart';
 import 'package:jumga/models/bank_branches.dart';
+import 'package:jumga/models/cart.dart';
 import 'package:jumga/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -202,5 +203,20 @@ class PaymentProvider extends ChangeNotifier {
       notifyListeners();
     }
     return message;
+  }
+
+  void updateUserEarnedAmount(List<Cart> cartList) {
+    for(Cart cart in cartList) {
+      double amountEarned = (cart.price * cart.quantity) * 0.975;
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      users
+          .doc(cart.ownerUserId ?? user.id)
+          .update({
+        kEarnedAmount: amountEarned,
+      })
+          .then((value) => print('user updated'))
+          .catchError((e) => updateUser());
+      notifyListeners();
+    }
   }
 }

@@ -67,8 +67,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       _ListTile(
                           text: 'Change Password',
                           onTap: () {
-                            var model = Provider.of<PaymentProvider>(context,listen:false);
-                            model.updateUser();
+
                           },
                           imagePath: 'images/padlock.svg'),
                       _ListTile(
